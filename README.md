@@ -5,21 +5,48 @@ Data Transformation Pipeline: Contracts and Claims to Transactions
 
 ## Project Overview  
 
-This project implements a **data transformation pipeline** using **Python** and **Apache Spark** to process contracts and claims data. The goal is to produce transactions adhering to a common internal data model, following the requirements outlined by the "Europe 3" source.  
+This project implements a **data transformation pipeline** using **Python** and **PySpark** to process contracts and claims data. The pipeline generates transactions that comply with an internal data model, following business logic and technical requirements provided for the "Europe 3" data source.
 
-The implementation is self-contained, covered by tests, and adheres to production-level coding standards. It processes input data, applies specified transformations, and saves the output in the desired format.  
+The pipeline is modular, testable, and extensible, designed for robust batch processing.
 
 ---
 
 ## Features  
 
-- Processes **contract** and **claim** datasets into a unified **transaction** dataset.  
-- Implements business rules and mappings as specified:  
-  - Converts `CLAIM_TYPE` to `TRANSACTION_TYPE`.  
-  - Maps `CLAIM_ID` prefixes to `TRANSACTION_DIRECTION`.  
-  - Generates unique IDs for transactions via a REST API.  
-- Fully tested with automated unit tests for validation.  
-- Supports additional batches of data without overwriting existing transactions.  
+- Converts **contracts** and **claims** datasets into a unified **transactions** dataset.
+- Applies domain-specific business logic:
+  - Converts `CLAIM_TYPE` into standardized `TRANSACTION_TYPE`.
+  - Infers `TRANSACTION_DIRECTION` based on the `CLAIM_ID` prefix.
+  - Transforms `CLAIM_ID` to extract `SOURCE_SYSTEM_ID`.
+  - Maps `DATE_OF_LOSS`, `CREATION_DATE`, and runtime `SYSTEM_TIMESTAMP`.
+  - Uses a REST API (`hashify.net`) to generate unique `NSE_ID` hashes for transaction records.
+- Maintains **idempotency** by appending new transactions without overwriting past batches.
+- Includes unit tests and data validation steps.
+
+---
+
+## Workflow  
+
+1. **Read and Validate Input**  
+   - Load contracts and claims datasets using PySpark.
+   - Validate schema structure and column presence.
+
+2. **Join & Transform**  
+   - Join claims with contracts via `CONTRACT_ID` and `SOURCE_SYSTEM`.
+   - Apply mappings and transformations:
+     - `CLAIM_TYPE` → `TRANSACTION_TYPE` ("Corporate", "Private", or "Unknown").
+     - `CLAIM_ID` prefix → `TRANSACTION_DIRECTION` ("REINSURANCE" or "COINSURANCE").
+     - Strip prefix to obtain `SOURCE_SYSTEM_ID`.
+     - Format `DATE_OF_LOSS` to `BUSINESS_DATE`.
+     - Generate `SYSTEM_TIMESTAMP` using current datetime.
+
+3. **Enrich with Unique ID**  
+   - For each row, call `https://hashify.net` API with MD4 hash of `CLAIM_ID`.
+   - Assign result as `NSE_ID`.
+
+4. **Write Output**  
+   - Save the resulting transactions DataFrame to file in the specified format (e.g., Parquet or CSV).
+   - Output is non-destructive—previous batches remain untouched.
 
 ---
 
@@ -72,9 +99,6 @@ The following Python libraries are required for the implementation:
 
 - **PySpark (`pyspark>=3.5.0`)**: For distributed data processing and transformation.  
 - **Requests (`requests>=2.31.0`)**: To interact with the REST API for generating unique transaction IDs.  
-- **Pandas (`pandas>=2.2.1`)**: For additional data manipulation and processing.  
-- **Python-Dateutil (`python-dateutil>=2.8.2`)**: To handle date transformations.  
-- **Pytest (`pytest>=8.1.1`)**: For testing and validating the implementation.  
 
 ### Installation  
 
@@ -85,15 +109,31 @@ The following Python libraries are required for the implementation:
 2. Clone the repository:  
    ```bash
    pip install -r requirements.txt
-
 ### How to Run
-
 1. Run the pipeline: 
    ```bash
    python main.py
-2. Test the implementation:
-   ```bash
-   pytest
-
 ### License
 Do not share or distribute this code without prior authorization.
+
+##
+## Conceptual Proposal: Handling New Batches of Input Data
+
+To prevent overriding existing transactions while processing new batches, we can follow the following steps:
+
+1. **Batch Identification**:
+   Assign a unique identifier (e.g., timestamp or batch number) to each batch to differentiate new and existing data.
+
+2. **Incremental Processing**:
+   Process new batches in isolation to maintain the integrity of previous transactions. Use composite primary keys to ensure uniqueness.
+
+3. **Data Deduplication**:
+   Identify and eliminate duplicates by comparing incoming transactions against existing ones using key attributes.
+
+4. **Error Handling**:
+   Log conflicts or ambiguous data separately to ensure smooth processing without affecting prior batches.
+
+5. **Archiving**:
+   Archive older transactions in a separate layer for long-term storage and auditing purposes.
+
+Ensuring transaction integrity, simplifies data reconciliation, and minimizes conflicts between batches.

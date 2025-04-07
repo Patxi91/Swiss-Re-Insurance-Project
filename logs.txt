@@ -1,0 +1,68 @@
+root
+ |-- SOURCE_SYSTEM: string (nullable = true)
+ |-- CONTRACT_ID: long (nullable = true)
+ |-- CONTRACT_TYPE: string (nullable = true)
+ |-- INSURED_PERIOD_FROM: date (nullable = true)
+ |-- INSURED_PERIOD_TO: date (nullable = true)
+ |-- CREATION_DATE: timestamp (nullable = true)
+
++--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+|       SOURCE_SYSTEM|CONTRACT_ID|CONTRACT_TYPE|INSURED_PERIOD_FROM|INSURED_PERIOD_TO|      CREATION_DATE|
++--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+|Contract_SR_Europa_3|  408124123|       Direct|         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Contract_SR_Europa_3|   46784575|       Direct|         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Contract_SR_Europa_3|   97563756|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Contract_SR_Europa_3|   13767503|  Reinsurance|         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Contract_SR_Europa_3|  656948536|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
++--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+
+root
+ |-- SOURCE_SYSTEM: string (nullable = true)
+ |-- CLAIM_ID: string (nullable = true)
+ |-- CONTRACT_SOURCE_SYSTEM: string (nullable = true)
+ |-- CONTRACT_ID: long (nullable = true)
+ |-- CLAIM_TYPE: string (nullable = true)
+ |-- DATE_OF_LOSS: date (nullable = true)
+ |-- AMOUNT: decimal(16,5) (nullable = true)
+ |-- CREATION_DATE: timestamp (nullable = true)
+
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+
+|    SOURCE_SYSTEM|   CLAIM_ID|CONTRACT_SOURCE_SYSTEM|CONTRACT_ID|CLAIM_TYPE|DATE_OF_LOSS|     AMOUNT|      CREATION_DATE|
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+
+|Claim_SR_Europa_3|CL_68545123|  Contract_SR_Europa_3|   97563756|         2|  2021-02-14|  523.21000|2022-01-17 14:45:00|
+|Claim_SR_Europa_3|  CL_962234|  Contract_SR_Europa_4|  408124123|         1|  2021-01-30|52369.00000|2022-01-17 14:46:00|
+|Claim_SR_Europa_3|  CL_895168|  Contract_SR_Europa_3|   13767503|          |  2020-09-02|98465.00000|2022-01-17 14:45:00|
+|Claim_SR_Europa_3|CX_12066501|  Contract_SR_Europa_3|  656948536|         2|  2022-01-04| 9000.00000|2022-01-17 14:45:00|
+|Claim_SR_Europa_3| RX_9845163|  Contract_SR_Europa_3|  656948536|         2|  2015-06-04|11000.00000|2022-01-17 14:45:00|
+|Claim_SR_Europa_3|CL_39904634|  Contract_SR_Europa_3|  656948536|         2|  2020-11-04|11000.00000|2022-01-17 14:46:00|
+|Claim_SR_Europa_3|  U_7065313|  Contract_SR_Europa_3|   46589516|         1|  2021-09-29|11000.00000|2022-01-17 14:46:00|
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+
+
+All Input Data tests passed!
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+|    SOURCE_SYSTEM|   CLAIM_ID|CONTRACT_SOURCE_SYSTEM|CONTRACT_ID|CLAIM_TYPE|DATE_OF_LOSS|     AMOUNT|      CREATION_DATE|       SOURCE_SYSTEM|CONTRACT_ID|CONTRACT_TYPE|INSURED_PERIOD_FROM|INSURED_PERIOD_TO|      CREATION_DATE|
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+|Claim_SR_Europa_3|  CL_895168|  Contract_SR_Europa_3|   13767503|          |  2020-09-02|98465.00000|2022-01-17 14:45:00|Contract_SR_Europa_3|   13767503|  Reinsurance|         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Claim_SR_Europa_3|CL_68545123|  Contract_SR_Europa_3|   97563756|         2|  2021-02-14|  523.21000|2022-01-17 14:45:00|Contract_SR_Europa_3|   97563756|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Claim_SR_Europa_3|CX_12066501|  Contract_SR_Europa_3|  656948536|         2|  2022-01-04| 9000.00000|2022-01-17 14:45:00|Contract_SR_Europa_3|  656948536|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Claim_SR_Europa_3| RX_9845163|  Contract_SR_Europa_3|  656948536|         2|  2015-06-04|11000.00000|2022-01-17 14:45:00|Contract_SR_Europa_3|  656948536|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
+|Claim_SR_Europa_3|CL_39904634|  Contract_SR_Europa_3|  656948536|         2|  2020-11-04|11000.00000|2022-01-17 14:46:00|Contract_SR_Europa_3|  656948536|             |         2015-01-01|       2099-01-01|2022-01-17 13:42:00|
++-----------------+-----------+----------------------+-----------+----------+------------+-----------+-------------------+--------------------+-----------+-------------+-------------------+-----------------+-------------------+
+
++----------------------+-------------------------+----------------+----------------+---------------------+---------------+-------------+-------------------+--------------------+--------------------+
+|CONTRACT_SOURCE_SYSTEM|CONTRACT_SOURCE_SYSTEM_ID|SOURCE_SYSTEM_ID|TRANSACTION_TYPE|TRANSACTION_DIRECTION|CONFORMED_VALUE|BUSINESS_DATE|      CREATION_DATE|    SYSTEM_TIMESTAMP|           
+   NSE_ID|
++----------------------+-------------------------+----------------+----------------+---------------------+---------------+-------------+-------------------+--------------------+--------------------+
+|              Europe 3|                 13767503|          895168|         Unknown|          COINSURANCE|    98465.00000|   2020-09-02|2022-01-17 14:45:00|2025-04-07 08:40:...|748e1b826108a6b6c...|
+|              Europe 3|                 97563756|        68545123|       Corporate|          COINSURANCE|      523.21000|   2021-02-14|2022-01-17 14:45:00|2025-04-07 08:40:...|07abca244fafa5286...|
+|              Europe 3|                656948536|        12066501|       Corporate|              UNKNOWN|     9000.00000|   2022-01-04|2022-01-17 14:45:00|2025-04-07 08:40:...|0a0a2e5df7cd28ab7...|
+|              Europe 3|                656948536|         9845163|       Corporate|          REINSURANCE|    11000.00000|   2015-06-04|2022-01-17 14:45:00|2025-04-07 08:40:...|ced6345d78ab4411b...|
+|              Europe 3|                656948536|        39904634|       Corporate|          COINSURANCE|    11000.00000|   2020-11-04|2022-01-17 14:46:00|2025-04-07 08:40:...|0b24a28d3400b45ac...|
++----------------------+-------------------------+----------------+----------------+---------------------+---------------+-------------+-------------------+--------------------+--------------------+
+
+Warning: Nullable column TRANSACTION_DIRECTION contains no null values, which might be unexpected.
+Warning: Nullable column CONFORMED_VALUE contains no null values, which might be unexpected.
+Warning: Nullable column BUSINESS_DATE contains no null values, which might be unexpected.
+Warning: Nullable column CREATION_DATE contains no null values, which might be unexpected.
+Warning: Nullable column SYSTEM_TIMESTAMP contains no null values, which might be unexpected.
+All Output Schema tests on TRANSACTIONS passed!

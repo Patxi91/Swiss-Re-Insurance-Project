@@ -1,5 +1,3 @@
-pyspark>=3.5.0
-requests>=2.31.0
-pandas>=2.2.1
-python-dateutil>=2.8.2
-pytest>=8.1.1
+# Python dependencies
+pyspark>=3.5.0  # Apache Spark library for big data processing
+requests>=2.31.0  # Library for handling HTTP requests
