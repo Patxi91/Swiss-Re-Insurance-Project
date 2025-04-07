@@ -122,9 +122,10 @@ def test_primary_keys():
         "CLAIM PK constraint violated: SOURCE_SYSTEM, CLAIM_ID, CONTRACT_SOURCE_SYSTEM, CONTRACT_ID is not unique"
 
 if __name__ == "__main__":
+    
     # Test Input Data
-    # test_contracts_and_claims()
-    # test_primary_keys()
+    test_contracts_and_claims()
+    test_primary_keys()
     print("All Input Data tests passed!")
 
     # Step 1: Join contracts and claims
@@ -243,6 +244,7 @@ if __name__ == "__main__":
         
         return True # All tests passed
     
+    # Test Output Data
     if test_transactions_df_schema():
         print("All Output Schema tests on TRANSACTIONS passed!")
         transactions_df.write.json("TRANSACTIONS.json", mode="overwrite")  # Save the DataFrame as JSON file for readability (.parquet otherwise)
